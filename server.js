@@ -100,6 +100,25 @@ app.delete('/events/:eventid', (req,res) => {
 
 // !-- Update
 
+app.put('/events/:eventid', (req,res) => {
+    try{
+
+
+
+    const eventid = req.params.id
+    const result = events.replaceOne({_id: eventid}, req.body)
+    res.json({updatedCount: result.modifiedCount })
+
+
+
+    } catch(error) {
+        res.send('This is an Update Error')
+    }
+
+})
+
+
+
 
 
 
