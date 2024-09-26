@@ -30,25 +30,25 @@ const events = [
 
 
 // !-- Routes
-app.get('/events', (req,res) => {
+app.get('/events', (req, res) => {
     return res.send(events)
 })
 
 
 // !-- Show
-app.get('/events/:eventID', (req,res) => {
+app.get('/events/:eventID', (req, res) => {
     try {
         const numEvents = Number(req.params.eventID)
         const foundEvent = events.find((event) => {
             return event.id === numEvents
         })
-        
-        if(foundEvent){
+
+        if (foundEvent) {
             return res.send(foundEvent)
         }
-        
-        
-    } catch(error) {
+
+
+    } catch (error) {
         console.log(error)
         return res.status(404).send('This isnt working chief')
     }
@@ -59,12 +59,12 @@ app.get('/events/:eventID', (req,res) => {
 
 
 // !-- Create
-app.post('/events', (req,res) => {
+app.post('/events', (req, res) => {
     try {
-    req.body.id = events.length +1
-    console.log(req.body)
-    events.push(req.body)
-    return res.send(req.body)
+        req.body.id = events.length + 1
+        console.log(req.body)
+        events.push(req.body)
+        return res.send(req.body)
 
     } catch (error) {
         console.log(error)
@@ -77,42 +77,48 @@ app.post('/events', (req,res) => {
 
 
 // !-- Delete
-app.delete('/events/:eventid', (req,res) => {
+app.delete('/events/:eventid', (req, res) => {
     try {
 
-        const eventId = Number(req.params.id)
-        const eventToDelete = events.find(el => el.id === eventid)
-        const index = events.indexOf(eventToDelete)
+        const eventId = Number(req.params.eventid)
 
-        events.splice(index, 1)
-
-
-
-
-
+        const eventToDelete = events.findIndex(el => {
+            return el.id === eventId})
         
-    } catch (error){
-        res.send('error')
-    }}
+
+        events.splice(eventToDelete, 1)
+        console.log(events)
+
+
+
+
+
+    } catch (error) {
+        res.send('This is a Delete Error')
+    }
+}
 )
 
 
 
 // !-- Update
 
-app.put('/events/:eventid', (req,res) => {
-    try{
+app.put('/events/:eventid', (req, res) => {
+    try {
 
 
+        const eventId = Number(req.params.eventid)
+        
+        const foundEvent = events.find(event => {
+            return event.id === eventId
+        })
 
-    const eventid = req.params.id
-    const result = events.replaceOne({_id: eventid}, req.body)
-    res.json({updatedCount: result.modifiedCount })
+       const show = Object.assign(foundEvent,req.body)
 
+        res.send(show)
 
-
-    } catch(error) {
-        res.send('This is an Update Error')
+    } catch (error) {
+        res.status(500).send('This is an Update Error')
     }
 
 })
@@ -123,6 +129,10 @@ app.put('/events/:eventid', (req,res) => {
 
 
 // !-- 404
-app.get('*', (req,res) => {
-    return res.status(404).send("This Page Isn't Available You Fool")    
+app.get('*', (req, res) => {
+    return res.status(404).send("This Page Isn't Available You Fool")
+})
+
+app.use('*', (req, res) => {
+    return res.status(404).send("This Page Isn't Available You Fool")
 })
